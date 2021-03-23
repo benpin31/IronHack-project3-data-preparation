@@ -70,9 +70,9 @@ for (dateValue in unique(meltStat[, date])) {
     for (k in 1:dim(segment)[1]) {
       for (l in 1:segment[k, value]) {
         if(cpt %in% telList) {
-          res <- rbind(res,  segment[k, list(variable, randomHour(timeRange, date), "Telephone"), by = c("timeRange", "date")] )
+          res <- rbind(res,  segment[k, list(variable, randomHour(timeRange, date), "Téléphone"), by = c("timeRange", "date")] )
         } else {
-          res <- rbind(res,  segment[k, list(variable, randomHour(timeRange, date), "Physical"), by = c("timeRange", "date")] )
+          res <- rbind(res,  segment[k, list(variable, randomHour(timeRange, date), "Physique"), by = c("timeRange", "date")] )
         }
         cpt<-cpt+1
       }
@@ -83,3 +83,9 @@ for (dateValue in unique(meltStat[, date])) {
 
 res <- res[,list(variable, V2, V3)]
 colnames(res) <- c("category", "date", "contactType")
+
+res[, seed := paste0('{"category":"',category,'", "date":"',date,'", "contactType":"',contactType,'"}')]
+
+querySeed <- paste0("[", paste(res[,seed], collapse=",\n"), "]")
+write.csv(querySeed, "seed.txt", quote=FALSE)
+
