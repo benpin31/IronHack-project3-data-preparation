@@ -85,6 +85,14 @@ res <- res[,list(variable, V2, V3)]
 colnames(res) <- c("category", "date", "contactType")
 
 res[, seed := paste0('{"category":"',category,'", "date":"',date,'", "contactType":"',contactType,'"}')]
+res2020 <- copy(res)
+res2020[, date := date+364*24*3600]
+res2020 <- res2020[format(date,"%Y-%m-%d") != "2020-01-01"]
+sort(res2020[,unique(format(date,"%Y-%m-%d"))])
+res2021 <- copy(res)
+res2021[, date := date+(365+363)*24*3600]
+res2021 <- res2021[!(format(date,"%Y-%m-%d") %in% c("2019-01-01", "2020-12-30", "2020-12-31"))]
+sort(res2021[,unique(format(date,"%Y-%m-%d"))])
 
 querySeed <- paste0("[", paste(res[,seed], collapse=",\n"), "]")
 write.csv(querySeed, "seed.txt", quote=FALSE)
